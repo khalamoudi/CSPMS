@@ -1,0 +1,14 @@
+{
+  "name": "sit_780_CSPMS",
+  "version": "1.0.0",
+  "description": "Cyber Security Policy Mangment System",
+  "main": "server.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  
+}
