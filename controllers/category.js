@@ -29,11 +29,39 @@ const createCategory = async (req, res) => {
   }
 }
 
+const updateCategory = async (req, res) => {
+  try {
+    let data = req.body
+    console.log("data",data)
+    
+    let initialCategory = await category.findByIdAndUpdate(data.id, { name: data.name,description:data.description },
+      async function (err, docs) {
+      if (err){
+      console.log(err)
+      res.render('category.ejs', {
+        data: { error: 'Category Not  Updated', category: initialCategory },
+      })
+      }
+      else{
+        let cat = await category.find().lean()
+  
+        res.render('category.ejs', {
+          data: { success: 'Category Updated Successfully', category: cat },
+        })
+      }
+      });
+  } catch (e) {
+    console.log(e)
+    res.json({ error: 'There is an error while creating category' })
+  }
+  
+}
+
 const getCategory = async (req, res) => {
   let cat = await category.find().lean()
   res.render('category.ejs', { data: { category: cat } })
 }
 
 module.exports = {
-  createCategory, getCategory
+  createCategory, getCategory,updateCategory
 }
