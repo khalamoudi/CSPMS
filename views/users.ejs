@@ -1,0 +1,139 @@
+<%- include ('./partials/head.ejs') %>
+    <!-- Embedded Javascreipt -->
+    <title>CUsers</title>
+ 
+</head>
+<body>
+  <%- include ('./partials/homeNavbar.ejs') %>
+
+   <h1 style="text-align: center; margin:30px 0px"><i>Users</i></h1>
+  <div class="tab">
+  </div>
+
+
+  <div id="view" class="tabcontent">
+    
+    <div class="container">
+        <table class="table table-striped tbl-class">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+             
+            </tr>
+          </thead>
+          <tbody>
+        <%  if(data.user.length) 
+        {
+          
+          let count =0;
+        for(var i=0;i < data.user.length ; i++) {
+          count++; %>
+     
+          <tr>
+            <th scope="row"><%= i+1  %></th>
+            <td><%= data.user[i].userName %></td>
+            <td><%= data.user[i].email %></td>
+
+          </tr>
+          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form action="/user/" method="put">
+                <div class="modal-body">
+
+                    <div  class="form-group hide">
+                      <label>Email</label>
+                      <input  value="<%=data.user[i].email %>" type="text" class="form-control" name="email" id="email" 
+                        placeholder="Enter Id">  
+                    </div>
+                    <div class="form-group">
+                      <label >Role</label>
+                      <!-- <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"> -->
+                      <select  name="role" id="role" value="<%=data.user[i].role %>" class="form-select" >
+                        <option selected>Select Role</option>
+                        <option value="Member">Member</option>
+                         <option value="Admin">Admin</option> 
+                      </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </form>
+            </div>
+          </div> 
+
+
+          
+          <% } 
+          console.log('count',count)
+          if(count == data.user.length)
+          { %>
+            <script>
+              let a = '<%=  data.user.length %>'
+              console.log('users', a)
+              var r = localStorage.getItem('role')
+
+                  r = r.toLowerCase()
+                  if (!r.includes('admin')) {
+
+                    for( var i=0;i< a ;i++)
+                    {
+                      console.log('gfd')
+                       let d = document.getElementById(`ad${i+1}`)
+      //child = d.lastChild
+      
+                        d.removeChild(d.lastChild)
+                    }
+
+                  }
+              
+            </script>
+          <% }
+        } %>
+          </tbody>
+        </table>
+      </div>
+
+
+
+<!-- Modal -->
+
+    
+  </div>
+  
+ 
+  <script>
+    
+  function tabChange(evt, action) {
+      $('#msg').css('display','none')
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(action).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+  $(document).ready(function(){
+    initial()
+});
+  function initial()
+  {
+
+     document.getElementById('view').style.display = "block";
+  
+  }
+
+
+  </script>
+</body>
+<%- include ('./partials/footer.ejs') %>
+</html>

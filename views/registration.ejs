@@ -1,0 +1,65 @@
+<%- include ('./partials/head.ejs') %>
+  <!-- Embedded Javascreipt -->
+  <title>SignUp</title>
+   <!--This script tag is used to maintain session using localstorage-->
+
+  <%- include ('./partials/navbar.ejs') %>
+  </head>
+
+  <body>
+
+
+    <div class="registration-section" ><h2 style="text-align: center;">Registration</h2></div>
+    <div class="jumbotron registration-section">
+  
+
+      <form action="/auth/signup" method="post">
+        <div class="form-group">
+          <label >Email address</label>
+          <input type="email" class="form-control" name="email" id="email" 
+            placeholder="Enter email">
+        
+        </div>
+        <div class="form-group">
+          <label >Password</label>
+          <input  name="password" type="password" class="form-control"  placeholder="Password">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Name</label>
+          <input name="userName" type="text" class="form-control" id="userName" placeholder="Name">
+        </div>
+        
+        <div class="form-group">
+          <label >Department</label>
+
+          <select class="form-select" name="department" id="department" >
+            <option selected>Select Department</option>
+            <% if(data.department) {
+              console.log(data)
+              for(var i=0; i < data.department.length ; i++) {
+                console.log(data.department[i].name ) %>
+            <option value='<%= data.department[i]._id %>'><%= data.department[i].name %></option>
+            <% }} %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label >Role</label>
+          <!-- <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"> -->
+          <select  name="role" id="role" class="form-select" >
+            <option selected>Select Role</option>
+            <option value="Member">Member</option>
+            <!-- <option value="Admin">Admin</option> -->
+          </select>
+        </div>
+
+
+        <button type="submit"  class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+  </body>
+
+ 
+
+  </html>

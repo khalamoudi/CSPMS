@@ -1,0 +1,200 @@
+<%- include ('./partials/head.ejs') %>
+    <!-- Embedded Javascreipt -->
+    <title>Policy</title>
+     <!--This script tag is used to maintain session using localstorage-->
+
+</head>
+<body>
+  <%- include ('./partials/homeNavbar.ejs') %>
+
+   <h2 style="text-align: center; margin:30px 0px"><i>Policy</i></h2>
+    <div class="text-right mr">
+    <button  id="admin" class="btn btn-success" data-toggle="modal" data-target="#exampleModal"><b>Add</b></button>
+
+  </div>
+  
+
+<%if(data.success)
+{
+    console.log('data',data) %>
+    <p  style="margin-top: 20px;"  id="msg" class="alert alert-success"><%=data.success%></p>
+    <script>
+      window.location.href = '/policy'
+    </script>
+<% }%>
+<%if(data.error)
+{
+    console.log('data',data) %>
+    <p  style="margin-top: 20px;"  id="msg" class="alert alert-danger"><%=data.error%></p>
+<% }%>
+  <div id="view" class="tabcontent">
+    <div class="container">
+                 <!---This code is used to check if there is values in category then render it on browser-->
+                 <div class="registration-section"><h5 style="text-align: center;">Category</h5></div>
+                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                  
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                      <% if(data.category && data.policy)
+                      {
+                        console.log('pls',data.policy)
+                        let pls = JSON.stringify(data.policy)
+                        
+                        for(var i=0;i < data.category.length ; i++) {
+                        %>
+                        <li class="nav-item active">
+                          <a class="nav-link" onclick="geter('<%= data.category[i]._id %>','<%= pls %>')" href="#"><%= data.category[i].name %><span class="sr-only">(current)</span></a>
+                        </li> 
+                     <% }}%>
+      
+                    </ul>
+                  </div>
+                </nav>
+            
+    </div>
+    <div class="container">
+    <div id="rend" class="row"></div>
+      
+  </div>
+</div>
+  
+
+
+
+  <!-- modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <form action="/policy/" method="post" enctype="multipart/form-data">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create Policy</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+  
+          <div  class="form-group  ">
+            <label>Name</label>
+            <input   type="text" class="form-control" name="name"  
+              placeholder="Enter Policy name">
+          </div>
+          <div class="form-group">
+            <label >Policy</label>
+            <input type="file" class="form-control" name="file" id="file" 
+              placeholder="Upload Policy file">
+            
+          </div>
+
+          <div class="form-group">
+            <label >Thumbnail Image</label>
+            <input type="file" class="form-control" name="file1" id="file" 
+              placeholder="Upload thumbnail image">
+            
+          </div>
+
+          <div class="form-group">
+            <label >Category</label>
+            
+            <select class="form-select" name="category"  >
+              <option selected>Select Category</option>
+              <% if(data.category) {
+                console.log('category',data)
+                for(var i=0;i < data.category.length ; i++) {
+                  console.log(data.category[i].name ) %>
+              <option value= '<%= data.category[i]._id %>'><%= data.category[i].name %></option>
+              <% }} %>
+            </select>
+          </div>
+  
+            <div  class="form-group ">
+              <label>Description</label>
+              <textarea type="text" class="form-control" name="description"  
+                placeholder="Enter Description"></textarea>
+            </div>
+  
+            
+  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </div>
+    </form>
+    </div>
+  </div>
+
+  <!-- modal-->
+  
+
+  
+  <script>
+    
+    function geter(category, pls) {
+  
+  console.log('policy',JSON.parse(pls))
+    
+  let policy = JSON.parse(pls)
+  
+  let notificationList= document.querySelector('#rend')
+  let b = notificationList.childNodes;
+  console.log(b.length)
+  if(b.length>0)
+  {
+    console.log('wrong')
+    while(notificationList.firstChild){
+      notificationList.removeChild(notificationList.firstChild)
+    }
+  
+  }
+   console.log(policy[0].name)
+    for(var i=0;i<policy.length;i++)
+    {
+      
+      if(policy[i].category === category)
+      {
+        let mainDiv = document.createElement('div')
+        mainDiv.classList.add('col-lg-4', 'cursor','pls')
+      markup = ` <div class="card" style="width: 18rem;"> <a style="cursor:pointer;"class="cursor" href="${policy[i].file_url}"><img class="card-img-top" src="${policy[i].thumbnail_url}"  alt="Card image cap"></a>
+  <div class="card-body">
+    <h5 class="card-title">${policy[i].name}</h5>
+    <p class="card-text">${policy[i].description}</p>
+  </div> </div>`
+    mainDiv.innerHTML = markup
+    notificationList.appendChild(mainDiv) 
+  }
+    }
+  }
+  $(document).ready(function(){
+    initial()
+});
+  function initial()
+  {
+     document.getElementById('view').style.display = "block";
+   
+  }
+  function tabChange(evt, action) {
+      $('#msg').css('display','none')
+      
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(action).style.display = "block";
+    //console.log(evt.currentTarget.textContent )
+    evt.currentTarget.className += " active";
+  }
+  </script>
+</body>
+<%- include ('./partials/footer.ejs') %>
+</html>
