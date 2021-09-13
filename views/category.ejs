@@ -1,154 +1,188 @@
 <%- include ('./partials/head.ejs') %>
-  <!-- Embedded Javascreipt -->
-  <title>Category</title>
+    <!-- Embedded Javascreipt -->
+    <title>Category</title>
+ 
+</head>
 
-  </head>
+<body>
+  <%- include ('./partials/homeNavbar.ejs') %>
 
-  <body>
-    <%- include ('./partials/homeNavbar.ejs') %>
+  <h1 style="text-align: center; margin:30px 0px;"><i>Category</i></h1>
+  <div class="text-right mr">
+   <button id="admin" class="btn btn-success" data-toggle="modal" data-target="#exampleModal"><b>Add</b></button>
 
-      <h1 style="text-align: center; margin:30px 0px;"><i>Category</i></h1>
-      <div class="text-right mr">
-        <button id="admin" class="btn btn-success" data-toggle="modal" data-target="#exampleModal"><b>Add</b></button>
+  </div>
+
+<%if(data.success)
+{
+    console.log('data',data) %>
+    <p  style="margin-top: 20px;"  id="msg" class="alert alert-success"><%=data.success%></p>
+<% }%>
+<%if(data.error)
+{
+    console.log('data',data) %>
+    <p  style="margin-top: 20px;"  id="msg" class="alert alert-danger"><%=data.error%></p>
+<% }%>
+
+
+  <div id="view">
+    
+    <div class="container">
+        <table class="table table-striped tbl-class">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Category Name</th>
+              <th scope="col">Category Description</th>
+              <th scope="col">Update</th>
+              <th scope="col">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!---This code is used to check if there is values in category then render it on browser-->
+        <%  if(data.category.length) 
+        {
+          
+        for(var i=0;i < data.category.length ; i++) { %>
+          <% console.log("data") %>
+          <tr>
+            <th scope="row"><%= i+1  %></th>
+            <td><%= data.category[i].name %></td>
+            <td><%= data.category[i].description %></td>
+            <td><button id="<%=data.category[i]._id%>" class="btn btn-success" onclick="updatefunc('<%=data.category[i].name%>','<%=data.category[i].description%>','<%=data.category[i]._id%>')" data-toggle="modal" data-target="#exampleModal2"><b>Update</b></button></td>
+            <td><button id="<%=data.category[i]._id%>" class="btn btn-success" onclick="deletefunc('<%=data.category[i]._id%>')" data-toggle="modal" data-target="#exampleModal3"><b>Delete</b></button></td>
+          </tr>
+          <% } } %>
+          </tbody>
+        </table>
+      </div>
+    
+  </div>
+  
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form action="/category/" method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create new category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+
+        <div  class="form-group  ">
+          <label>Name</label>
+          <input   type="text" class="form-control" name="name"  
+            placeholder="Enter Category name">
+        </div>
+
+          <div  class="form-group ">
+            <label>Describtion</label>
+            <textarea type="text" class="form-control" name="description"  
+              placeholder="Enter Description"></textarea>
+          </div>
 
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
 
-      <%if(data.success) { console.log('data',data) %>
-        <p style="margin-top: 20px;" id="msg" class="alert alert-success">
-          <%=data.success%>
-        </p>
-        <% }%>
-          <%if(data.error) { console.log('data',data) %>
-            <p style="margin-top: 20px;" id="msg" class="alert alert-danger">
-              <%=data.error%>
-            </p>
-            <% }%>
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form action="/category/update/" method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
 
+        <div  class="form-group  " style="display: none;">
+          <label>Id</label>
+          <input  id="idcategory" type="text" class="form-control" name="id"  
+            placeholder="id">
+        </div>
+        <div>
+          <label>Name</label>
+          <input  id="namecategory" type="text" class="form-control" name="name"  
+            placeholder="Enter Category name">
+        </div>
 
-              <div id="view">
+          <div  class="form-group ">
+            <label>Description</label>
+            <textarea id="descriptioncategory"type="text" class="form-control" name="description"  
+              placeholder="Enter Description"></textarea>
+          </div>
 
-                <div class="container">
-                  <table class="table table-striped tbl-class">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Category Name</th>
-                        <th scope="col">Category Description</th>
-                        <th scope="col">Update</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <!---This code is used to check if there is values in category then render it on browser-->
-                      <% if(data.category.length) { for(var i=0;i < data.category.length ; i++) { %>
-                        <% console.log("data") %>
-                          <tr>
-                            <th scope="row">
-                              <%= i+1 %>
-                            </th>
-                            <td>
-                              <%= data.category[i].name %>
-                            </td>
-                            <td>
-                              <%= data.category[i].description %>
-                            </td>
-                            <td><button id="<%=data.category[i]._id%>" class="btn btn-success"
-                                onclick="updatefunc('<%=data.category[i].name%>','<%=data.category[i].description%>','<%=data.category[i]._id%>')"
-                                data-toggle="modal" data-target="#exampleModal2"><b>Update</b></button></td>
-                          </tr>
-                          <% } } %>
-                    </tbody>
-                  </table>
-                </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
 
-              </div>
+<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form action="/category/delete/" method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div  class="form-group  " style="display: none;">
+          <label>Id</label>
+          <input  id="idcategorydelete" type="text" class="form-control" name="id"  
+            placeholder="id">
+        </div>
+        <h1>Are You Sure?</h1>
 
+          
 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Delete</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
 
-              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <form action="/category/" method="post">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Create new category</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
+</body>
+<script>
+  function updatefunc(name,category,id)
+{
+  console.log("update function is here")
+  document.getElementById("idcategory").value=id
+  document.getElementById("namecategory").value=name
+  document.getElementById("descriptioncategory").value=category
+  console.log(name,category,id)
+}
 
-                      <div class="modal-body">
-
-                        <div class="form-group  ">
-                          <label>Name</label>
-                          <input type="text" class="form-control" name="name" placeholder="Enter Category name">
-                        </div>
-
-                        <div class="form-group ">
-                          <label>Describtion</label>
-                          <textarea type="text" class="form-control" name="description"
-                            placeholder="Enter Description"></textarea>
-                        </div>
-
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Create</button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-
-              <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <form action="/category/update/" method="post">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Update category</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-
-                      <div class="modal-body">
-
-                        <div class="form-group  " style="display: none;">
-                          <label>Id</label>
-                          <input id="idcategory" type="text" class="form-control" name="id" placeholder="id">
-                        </div>
-                        <div>
-                          <label>Name</label>
-                          <input id="namecategory" type="text" class="form-control" name="name"
-                            placeholder="Enter Category name">
-                        </div>
-
-                        <div class="form-group ">
-                          <label>Description</label>
-                          <textarea id="descriptioncategory" type="text" class="form-control" name="description"
-                            placeholder="Enter Description"></textarea>
-                        </div>
-
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-
-  </body>
-  <script>
-    function updatefunc(name, category, id) {
-      console.log("update function is here")
-      document.getElementById("idcategory").value = id
-      document.getElementById("namecategory").value = name
-      document.getElementById("descriptioncategory").value = category
-      console.log(name, category, id)
-    }
-  </script>
-  
-<% - include('./partials/footer.ejs') %>
-</html >
+function deletefunc(id)
+{
+  document.getElementById("idcategorydelete").value=id
+  //window.location.href="/edit/"+id
+}
+</script>
+<%- include ('./partials/footer.ejs') %>
+</html>
