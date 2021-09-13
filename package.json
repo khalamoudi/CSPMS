@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "sit_780_mvp",
+=======
+  "name": "sit_780_CSPMS",
+>>>>>>> 870c3a8169dadfefb2906b1203f4250da1047b71
   "version": "1.0.0",
   "description": "Cyber Security Policy Mangment System",
   "main": "server.js",
@@ -7,6 +11,7 @@
     "doc": "doc"
   },
   "scripts": {
+<<<<<<< HEAD
     "test": "mocha",
     "start": "node app.js"
   },
@@ -42,4 +47,10 @@
     "mocha": "^9.1.0",
     "request": "^2.88.2"
   }
+=======
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  
+>>>>>>> 870c3a8169dadfefb2906b1203f4250da1047b71
 }
