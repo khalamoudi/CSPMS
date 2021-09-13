@@ -33,10 +33,12 @@
           <th scope="col">#</th>
           <th scope="col">Department Name</th>
           <th scope="col">Department Description</th>
+          <th scope="col">Update</th>
+          <th scope="col">Delete</th>
         </tr>
       </thead>
       <tbody>
-            <!---This code is used to check if there is values in category then render it on browser-->
+            <!---This code is used to check if there is values in department then render it on browser-->
 
     <%  if(data.department.length) 
     {
@@ -47,6 +49,9 @@
         <th scope="row"><%= i+1  %></th>
         <td><%= data.department[i].name %></td>
         <td><%= data.department[i].description %></td>
+        <td><button id="<%=data.department[i]._id%>" class="btn btn-success" onclick="updatefunc('<%=data.department[i].name%>','<%=data.department[i].description%>','<%=data.department[i]._id%>')" data-toggle="modal" data-target="#exampleModal2"><b>Update</b></button></td>
+        <td><button id="<%=data.department[i]._id%>" class="btn btn-success" onclick="deletefunc('<%=data.department[i]._id%>')" data-toggle="modal" data-target="#exampleModal3"><b>Delete</b></button></td>
+      
       </tr>
       <% } } %>
       </tbody>
@@ -94,6 +99,95 @@
   </div>
 </div>
 <!--  modal-->
+
+
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form action="/department/update/" method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update department</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+
+        <div  class="form-group  " style="display: none;">
+          <label>Id</label>
+          <input  id="iddepartment" type="text" class="form-control" name="id"  
+            placeholder="id">
+        </div>
+        <div>
+          <label>Name</label>
+          <input  id="namedepartment" type="text" class="form-control" name="name"  
+            placeholder="Enter department name">
+        </div>
+
+          <div  class="form-group ">
+            <label>Description</label>
+            <textarea id="descriptiondepartment"type="text" class="form-control" name="description"  
+              placeholder="Enter Description"></textarea>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form action="/department/delete/" method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete department</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div  class="form-group  " style="display: none;">
+          <label>Id</label>
+          <input  id="iddepartmentdelete" type="text" class="form-control" name="id"  
+            placeholder="id">
+        </div>
+        <h1>Are You Sure?</h1>
+
+          
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Delete</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
+
+<script>
+  function updatefunc(name,department,id)
+{
+  console.log("update function is here")
+  document.getElementById("iddepartment").value=id
+  document.getElementById("namedepartment").value=name
+  document.getElementById("descriptiondepartment").value=department
+  console.log(name,department,id)
+}
+
+function deletefunc(id)
+{
+  document.getElementById("iddepartmentdelete").value=id
+  //window.location.href="/edit/"+id
+}
+</script>
 
 </body>
 <%- include ('./partials/footer.ejs') %>

@@ -28,6 +28,61 @@ const createDepartment = async (req, res) => {
   }
 }
 
+const updatedepartment = async (req, res) => {
+  try {
+    let data = req.body
+    console.log("data",data)
+    
+    let initialdepartment = await department.findByIdAndUpdate(data.id, { name: data.name,description:data.description },
+      async function (err, docs) {
+      if (err){
+      console.log(err)
+      res.render('department.ejs', {
+        data: { error: 'department Not  Updated', department: initialdepartment },
+      })
+      }
+      else{
+        let cat = await department.find().lean()
+  
+        res.render('department.ejs', {
+          data: { success: 'Department Updated Successfully', department: cat },
+        })
+      }
+      });
+  } catch (e) {
+    console.log(e)
+    res.json({ error: 'There is an error while creating Department' })
+  }
+  
+}
+
+const deletedepartment = async (req, res) => {
+  try {
+    let data = req.body
+    console.log("data",data)
+    
+    let initialdepartment = await department.findByIdAndRemove(data.id,
+      async function (err, docs) {
+      if (err){
+      console.log(err)
+      res.render('department.ejs', {
+        data: { error: 'Department Not  Deleted', department: initialdepartment },
+      })
+      }
+      else{
+        let cat = await department.find().lean()
+  
+        res.render('department.ejs', {
+          data: { success: 'Department Deleted Successfully', department: cat },
+        })
+      }
+      });
+  } catch (e) {
+    console.log(e)
+    res.json({ error: 'There is an error while creating department' })
+  }
+  
+}
 
 const getDepartment = async (req, res) => {
   let dep = await department.find().lean()
@@ -35,5 +90,5 @@ const getDepartment = async (req, res) => {
 }
 
 module.exports = {
-  createDepartment,getDepartment
+  createDepartment,getDepartment,deletedepartment,updatedepartment
 }
