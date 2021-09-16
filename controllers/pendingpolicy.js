@@ -26,6 +26,51 @@ const pendingPolicy = async (req, res) => {
   }
 }
 
+const approvePolicy = async (req, res) => {
+  try {
+    let data = req.body
+    data['status']='Approved'
+    console.log("data",data)
+    let doc = await policystatus.findOneAndUpdate({'id':data.id,'email':data.email}, data, {
+      new: true,
+      upsert: true
+    });
+    let plc = await policy.find({'enddate': {
+      $gte: Date.now()
+  }}).lean()
+    res.render('newpolicies.ejs', {
+      data: { success: 'Status Updated Successfully',policy: plc},
+    })
+   
+  } catch (e) {
+    console.log(e)
+    res.json({ error: 'There is an error while updating Policy Status' })
+  }
+  
+}
 
+const holdPolicy = async (req, res) => {
+  try {
+    let data = req.body
+    data['status']='Hold'
+    console.log("data",data)
+    let doc = await policystatus.findOneAndUpdate({'id':data.id,'email':data.email}, data, {
+      new: true,
+      upsert: true
+    });
+    let plc = await policy.find({'enddate': {
+      $gte: Date.now()
+  }}).lean()
+    res.render('newpolicies.ejs', {
+      data: { success: 'Status Updated Successfully',policy: plc},
+    })
+   
+  } catch (e) {
+    console.log(e)
+    res.json({ error: 'There is an error while updating Policy Status' })
+  }
+  
+  
+}
 
-module.exports = { pendingPolicy }
+module.exports = { pendingPolicy, approvePolicy , holdPolicy }
