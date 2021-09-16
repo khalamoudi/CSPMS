@@ -8,7 +8,7 @@
   <%- include ('./partials/homeNavbar.ejs') %>
 
   <h1 style="text-align: center; margin:30px 0px;"><i>Category</i></h1>
-  <div class="text-right mr">
+  <div class="text-right mr" id="btnadd">
    <button id="admin" class="btn btn-success" data-toggle="modal" data-target="#exampleModal"><b>Add</b></button>
 
   </div>
@@ -34,9 +34,16 @@
               <th scope="col">#</th>
               <th scope="col">Category Name</th>
               <th scope="col">Category Description</th>
-              <th scope="col">Update</th>
-              <th scope="col">Delete</th>
+              <th scope="col" id="labupd" >Update</th>
+              <th scope="col" id="labdel" >Delete </th>
             </tr>
+            <script>
+              if (localStorage.role!='Admin'){
+                document.getElementById("btnadd").style.display="none";
+                document.getElementById("labupd").style.display="none";
+                document.getElementById("labdel").style.display="none";
+              }
+              </script>
           </thead>
           <tbody>
             <!---This code is used to check if there is values in category then render it on browser-->
@@ -49,8 +56,16 @@
             <th scope="row"><%= i+1  %></th>
             <td><%= data.category[i].name %></td>
             <td><%= data.category[i].description %></td>
-            <td><button id="<%=data.category[i]._id%>" class="btn btn-warning" onclick="updatefunc('<%=data.category[i].name%>','<%=data.category[i].description%>','<%=data.category[i]._id%>')" data-toggle="modal" data-target="#exampleModal2"><b>Update</b></button></td>
-            <td><button id="<%=data.category[i]._id%>" class="btn btn-danger" onclick="deletefunc('<%=data.category[i]._id%>')" data-toggle="modal" data-target="#exampleModal3"><b>Delete</b></button></td>
+            <% var del = i;  var upd = 1000+i;  %>
+            <td><button id='<%=del%>' class="btn btn-warning" onclick="updatefunc('<%=data.category[i].name%>','<%=data.category[i].description%>','<%=data.category[i]._id%>')" data-toggle="modal" data-target="#exampleModal2"><b>Update</b></button></td>
+            <td><button id='<%=upd%>' class="btn btn-danger" onclick="deletefunc('<%=data.category[i]._id%>')" data-toggle="modal" data-target="#exampleModal3"><b>Delete</b></button></td>
+            <script>
+              if (localStorage.role!='Admin'){
+               
+                document.getElementById('<%=del%>').style.display="none";
+                document.getElementById('<%=upd%>').style.display="none";
+              }
+            </script>
           </tr>
           <% } } %>
           </tbody>

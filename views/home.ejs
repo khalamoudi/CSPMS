@@ -6,7 +6,13 @@
 </head>
 <body>
   <%- include ('./partials/homeNavbar.ejs') %>
-
+  <% if (data) { %>
+    <script>
+       localStorage.setItem("id",   '<%= data._id %>'   )      
+       localStorage.setItem("email",   '<%= data.email  %>'   ) 
+       localStorage.setItem("role",   '<%= data.role %>'   )    
+    </script>
+  <% } %>
   <div class="container">
     <div class="row">
         <div class="col-12 text-center">
@@ -15,6 +21,18 @@
     </div>
   </div>
 
+  <script>
+    var getTest = '<%= data %>';  //var test is now assigned to getTest which will only work on browsers
+    console.log(getTest);  // successfully prints 101 on browser
+ </script>
+  
+<script>
+ 
+   (function() {
+  
+      console.log("localstorage",localStorage)
+    })();
+</script>
 </body>
 <%- include ('./partials/footer.ejs') %>
 </html>

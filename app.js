@@ -14,7 +14,6 @@ const passport = require('passport')
 const dotenv = require('dotenv');
 const mongoose = require('mongoose')
 var http = require('http').createServer(app)
-
 // configure enviroment variables
 dotenv.config();
 
