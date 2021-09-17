@@ -16,4 +16,4 @@ const schema = new Schema(
     },
   }
 );
-module.exports = mongoose.model('UserDetail', schema);
+module.exports = mongoose.model('UserDetail', schema,'userdetails');
