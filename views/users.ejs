@@ -37,6 +37,7 @@
               document.getElementById("labupd").style.display="none";
               document.getElementById("labdel").style.display="none";
             }
+
             </script>
           <tbody>
             
@@ -63,6 +64,12 @@
                 document.getElementById('<%=del%>').style.display="none";
                 document.getElementById('<%=upd%>').style.display="none";
               }
+              if (localStorage.id=='<%=data.user[i].user_id%>'){
+               
+               document.getElementById('<%=del%>').style.display="none";
+               document.getElementById('<%=upd%>').style.display="none";
+             }
+              
             </script>
           </tr>
          

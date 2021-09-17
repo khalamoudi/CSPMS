@@ -24,6 +24,8 @@ const createPolicy = async (req, res) => {
       name: req.body.name,
       description: req.body.description,
       category: req.body.category,
+      enddate:req.body.enddate,
+      startdate:Date.now(),
       file_url:
         url.format({
           protocol: req.protocol,
