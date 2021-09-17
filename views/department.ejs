@@ -59,8 +59,8 @@
         <td><%= data.department[i].name %></td>
         <td><%= data.department[i].description %></td>
         <% var del = i;  var upd = 1000+i;  %>
-        <td><button id='<%=del%>' class="btn btn-warning" onclick="updatefunc('<%=data.department[i].name%>','<%=data.department[i].description%>','<%=data.department[i].email%>','<%=data.department[i]._id%>')" data-toggle="modal" data-target="#exampleModal2"><b>Update</b></button></td>
-        <td><button id='<%=upd%>' class="btn btn-danger" onclick="deletefunc('<%=data.department[i]._id%>')" data-toggle="modal" data-target="#exampleModal3"><b>Delete</b></button></td>
+        <td><button id='<%=del%>' class="btn btn-success" onclick="updatefunc('<%=data.department[i].name%>','<%=data.department[i].description%>','<%=data.department[i].email%>','<%=data.department[i]._id%>')" data-toggle="modal" data-target="#exampleModal2"><b>Update</b></button></td>
+        <td><button id='<%=upd%>' class="btn btn-success" onclick="deletefunc('<%=data.department[i]._id%>')" data-toggle="modal" data-target="#exampleModal3"><b>Delete</b></button></td>
         <script>
           if (localStorage.role!='Admin'){
            

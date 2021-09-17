@@ -14,6 +14,9 @@ const passport = require('passport')
 const dotenv = require('dotenv');
 const mongoose = require('mongoose')
 var http = require('http').createServer(app)
+const cluster = require("cluster"); 
+const cpus = require("os").cpus().length;
+
 // configure enviroment variables
 dotenv.config();
 
@@ -22,6 +25,7 @@ dotenv.config();
 const categoryRoute = require('./routes/categoryRouter')
 const departmentRoute = require('./routes/departmentRouter')
 const policyRouter = require('./routes/policyRouter')
+const pendingpolicyRouter = require('./routes/pendingpolicyRouter')
 const authRouter = require('./routes/authRouter')
 const usersRouter = require('./routes/usersRouter')
 
@@ -109,6 +113,7 @@ app.use('/home', require('./routes/homePage'))
 app.use('/department', departmentRoute)
 app.use('/category', categoryRoute)
 app.use('/policy', policyRouter)
+app.use('/pendingpolicy',pendingpolicyRouter)
 app.use('/auth', authRouter)
 app.use('/user', usersRouter)
 
@@ -154,9 +159,33 @@ const socketConnection = io
 
 module.exports.sockets = socketConnection
 
-
+/*
 http.listen(port, function () {
   console.log(`listening on port ${port}...`)
-})
+})*/
+
+if (cluster.isMaster) {
+  // Checking whether the current cluser is master or not.Boolean value is returned
+  console.log("Master CPU - ", process.pid);
+
+  for (var i = 0; i < cpus; i++) {
+    cluster.fork(); // Forking a new process from the cluster
+  }
+
+  cluster.on("exit", (worker) => {
+    console.log("Worker Process has died - " + process.pid); // Process that exited/died.
+    console.log("Process Remaining - " + Object.keys(cluster.workers).length); // Prints the number of running workers at any instance
+    console.log("Starting New Working");
+    cluster.fork(); // Creating a new process again after the previous process exited so that max number of cpus are utilised.
+    console.log("Process Remaining - " + Object.keys(cluster.workers).length);
+  });
+} else {
+  http
+    .listen(port, function (){
+      
+        message = `Running Process: ${process.pid}`;
+        console.log(message);
+    });
+}
 
 

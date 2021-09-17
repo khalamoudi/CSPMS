@@ -4,7 +4,6 @@ const policy = require('../models/policy')
 const policystatus = require('../models/policystatus')
 
 
-
 //// this function is used to create policy in database
 const pendingPolicy = async (req, res) => {
   console.log('req', req.body)
