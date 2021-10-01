@@ -28,6 +28,13 @@ router.post("/hold/", uploadFields, (req,res) =>{
         res.redirect('/auth/login')
      }),
 
+router.post("/count/", uploadFields, (req,res) =>{
+      if(req.isAuthenticated())
+          policyController.countPolicy(req,res)
+      else
+          res.redirect('/auth/login')
+       }),
+
 router.post("/approve/", uploadFields, (req,res) =>{
       if(req.isAuthenticated())
           policyController.approvePolicy(req,res)
