@@ -71,5 +71,45 @@ const holdPolicy = async (req, res) => {
   
   
 }
+const countPolicy = async (req, res) => {
+ 
+  
+  try {
+    let data = req.body
+    var all=0;
+    var actioned=0;
+    var Approved=0;
+    var hold=0;
+    data['status']='Hold'
+    console.log("data",data)
+    policystatus.find().exec(function (err, results) {
+      all = results.length
+      //console.log("overall",all)
+    
+    });
+    policystatus.find({'email':data.email}).exec(function (err, results) {
+      actioned = results.length
+      //console.log("specific email",actioned)
+    
+    });
+    policystatus.find({'email':data.email,'status':'Hold'}).exec( await function (err, results) {
+      hold = results.length
+      Approved=actioned-hold
+      //console.log("hold",hold,Approved)
+      var Data={all:all,actioned:actioned,Approved:Approved,hold:hold,nonactioned:all-actioned}
+      console.log(Data)
+      res.status(200).json({ data: Data })
+    
+    });
+    
+    
+   
+  } catch (e) {
+    console.log(e)
+    res.status(400).json({ Error: "Error" })
+  }
+  
+  
+}
 
-module.exports = { pendingPolicy, approvePolicy , holdPolicy }
+module.exports = { pendingPolicy, approvePolicy , holdPolicy,countPolicy }
