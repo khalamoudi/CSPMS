@@ -34,6 +34,13 @@ router.post("/count/", uploadFields, (req,res) =>{
       else
           res.redirect('/auth/login')
        }),
+router.post("/countpersons", uploadFields, (req,res) =>{
+        if(req.isAuthenticated())
+            policyController.countPersons(req,res)
+        else
+            res.redirect('/auth/login')
+         }),
+
 
 router.post("/approve/", uploadFields, (req,res) =>{
       if(req.isAuthenticated())
