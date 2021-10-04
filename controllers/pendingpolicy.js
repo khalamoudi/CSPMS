@@ -183,6 +183,83 @@ const countPersons = async (req, res) => {
   
 }
 
+const countmembers = async (req, res) => {
+ 
+  
+  
+    try {
+      let data = req.body
+      if (data.category!=="selectcategory"){
+        
+        var all=0;
+        var members=0;
+        var Approved=0;
+        var hold=0;
+        data['status']='Hold'
+        console.log("data",data)
+        policystatus.find().exec(function (err, results) {
+          all = results.length
+          //console.log("overall",all)
+        
+        });
+        policystatus.find({'category':data.category}).exec(function (err, results) {
+          members = results.length
+          //console.log("specific email",actioned)
+        
+        });
+        policystatus.find({'category':data.category,'status':'Approved'}).exec( await function (err, results) {
+          Approved=results.length
+          
+        
+        });
+        policystatus.find({'category':data.category,'status':'Hold'}).exec( await function (err, results) {
+          hold = results.length
+          //console.log("hold",hold,Approved)
+          var Data={all:all,members:members,Approved:Approved,hold:hold}
+          console.log(Data)
+          res.status(200).json({ data: Data })
+        
+        });
+        
+      
+      }
+      else{
+      var all=0;
+      var members=0;
+      var Approved=0;
+      var hold=0;
+      data['status']='Hold'
+      console.log("data",data)
+      policystatus.find().exec(function (err, results) {
+        all = results.length
+        members=all
+        //console.log("overall",all)
+      
+      });
+      
+      policystatus.find({'status':'Approved'}).exec( await function (err, results) {
+        Approved=results.length
+        
+      
+      });
+      policystatus.find({'status':'Hold'}).exec( await function (err, results) {
+        hold = results.length
+        //console.log("hold",hold,Approved)
+        var Data={all:all,members:members,Approved:Approved,hold:hold}
+        console.log(Data)
+        res.status(200).json({ data: Data })
+      
+      });
+      
+      
+    }
+    } catch (e) {
+      console.log(e)
+      res.status(400).json({ Error: "Error" })
+    }
+    
+  
+  
+}
 
-
-module.exports = { pendingPolicy, approvePolicy , holdPolicy,countPolicy,countPersons }
+module.exports = { pendingPolicy, approvePolicy , holdPolicy,countPolicy,countPersons,countmembers }

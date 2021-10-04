@@ -6,6 +6,7 @@ const schema = new Schema(
     id:{type: String},
     email:{type:String},
     status:{type:String},
+    category:{type:String},
   }
 );
 
