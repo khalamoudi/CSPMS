@@ -33,7 +33,8 @@ const usersRouter = require('./routes/usersRouter')
 const departmentModel = require('./models/department')
 const categoryModel = require('./models/category')
 const policyModel = require('./models/policy')
-
+const UserDetail = require('./models/UserDetail')
+const verificationcode = require('./models/verificationcode')
 //////////////////////////////////////////////////////////////////
 
 const db = require('./Config/keys')
@@ -117,6 +118,55 @@ app.use('/pendingpolicy',pendingpolicyRouter)
 app.use('/auth', authRouter)
 app.use('/user', usersRouter)
 
+
+app.post('/verification', async (req, res) => {
+  try {
+      console.log("request body",req.body)
+      verificationcode.find({'email':req.body.email,'code':req.body.verification}).exec( async function (err, results) {
+        console.log("results.length",results.length)
+        if (results.length==1){
+          
+           await UserDetail.findOneAndUpdate({'email':req.body.email}, {'verified':true},
+            async function (err, doc) {
+            if (err){
+                      console.log("err",err)
+                      res.render('registration2.ejs', {
+                        data: { success: 'Account Not Verified',Response:{'email':req.body.email}},
+                      })
+            }
+            else{
+              
+              res.render('login.ejs', {
+                data: { success: 'Account Verified Successfully'},
+              })
+
+
+            }
+          })
+          /*
+          res.render('login.ejs', {
+            data: { success: 'Account Verified Successfully'},
+          })*/
+          res.render('registration2.ejs', {
+            data: { success: 'Account Not Verified',Response:{'email':req.body.email}},
+          })
+        }
+        else{
+          res.render('registration2.ejs', {
+            data: { success: 'Account Not Verified',Response:{'email':req.body.email}},
+          })
+        }
+      })
+    
+  } catch (error) {
+    
+      res.render('registration2.ejs', {
+        data: { success: 'Account Not Verified'},
+      })
+    
+    
+  }
+})
 
 app.get('/home', async (req, res) => {
   let category = await categoryModel.find().lean()

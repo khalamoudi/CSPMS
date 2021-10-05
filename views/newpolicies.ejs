@@ -46,8 +46,8 @@
         <td><%= data.policy[i].name %></td>
         <td><%= data.policy[i].description %></td>
         <% var del = i;  var upd = 1000+i;  %>
-        <td><button class="btn btn-success" onclick="updatefunc('<%=data.policy[i]._id%>')" data-toggle="modal" data-target="#exampleModal2"><b>Approve</b></button></td>
-        <td><button  class="btn btn-success" onclick="deletefunc('<%=data.policy[i]._id%>')" data-toggle="modal" data-target="#exampleModal3"><b>Hold</b></button></td>
+        <td><button class="btn btn-success" onclick="updatefunc('<%=data.policy[i]._id%>','<%=data.policy[i].category%>')" data-toggle="modal" data-target="#exampleModal2"><b>Approve</b></button></td>
+        <td><button  class="btn btn-success" onclick="deletefunc('<%=data.policy[i]._id%>','<%=data.policy[i].category%>')" data-toggle="modal" data-target="#exampleModal3"><b>Hold</b></button></td>
      
       </tr>
       <% } } %>
@@ -122,6 +122,11 @@
           <input  id="idgmailapprove" type="email" class="form-control" name="email"  
             placeholder="id">
         </div>
+        <div  class="form-group  " style="display: none;">
+          <label>Id</label>
+          <input  id="idcategoryapprove" type="text" class="form-control" name="category"  
+            placeholder="id">
+        </div>
         <h1>Are You Sure?</h1>
 
           
@@ -158,6 +163,11 @@
           <input  id="idgmailhold" type="email" class="form-control" name="email"  
             placeholder="id">
         </div>
+        <div  class="form-group  " style="display: none;">
+          <label>Id</label>
+          <input  id="idcategoryhold" type="text" class="form-control" name="category"  
+            placeholder="id">
+        </div>
         <h1>Are You Sure?</h1>
 
           
@@ -173,15 +183,17 @@
 </div>
 
 <script>
-  function updatefunc(id)
+  function updatefunc(id,cat)
 {
   document.getElementById("idpolicyapprove").value=id
+  document.getElementById("idcategoryapprove").value=cat
   document.getElementById("idgmailapprove").value=localStorage.getItem("email")
 }
 
-function deletefunc(id)
+function deletefunc(id,cat)
 {
   document.getElementById("idpolicyhold").value=id
+  document.getElementById("idcategoryhold").value=cat
   document.getElementById("idgmailhold").value=localStorage.getItem("email")
   //window.location.href="/edit/"+id
 }

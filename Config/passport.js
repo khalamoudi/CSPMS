@@ -4,6 +4,8 @@ const User = require('../models/user');
 const UserDetail = require('../models/UserDetail');
 
 
+
+
 module.exports = (passport) => {
     // LOCAL LOGIN 
     passport.use('local-login', new LocalStrategy({
@@ -19,15 +21,25 @@ module.exports = (passport) => {
                 // this means fail the login
                 return done(null, false);
             }
-        
-            // check password validity
-            if (!bcrypt.compareSync(password, user.password)) {
-                // this means fail login
-                return done(null, false);
-            }
+        UserDetail.findOne({email: email}).then((UserDetail)=>{
+            if (UserDetail.verified){
+                if (!bcrypt.compareSync(password, user.password)) {
+                    // this means fail login
+                    return done(null, false);
+                }
+    
+                //pass user object -> no errors
+                return done(null, user)  
 
-            //pass user object -> no errors
-            return done(null, user)    
+            }
+            else{
+                done("Account Not verified", false)
+            }
+             
+
+        }).catch(function(err) {done("Account Not verified", false)});
+            // check password validity
+             
         }).catch(function(err) {done(err, false)});
     }));
 
@@ -71,18 +83,22 @@ module.exports = (passport) => {
             // create user on user Schema in DB
             new UserDetail({
                 user_id:savedUser._id,
-                email: email,
+                email: req.body.email,
                 userName: req.body.userName,
                 role: req.body.role,
-                Department:req.body.department
-            }).save(function(err, savedUserdetail){
+                Department:req.body.department,
+                phone:req.body.phone,
+                verified:false
+            }).save(async function(err, savedUserdetail){
                 if (err) {
+                    
                     return done(err, false)
                 }
-
-            });
                 // Success. Pass back savedUser
-                return done(null, savedUser);
+                //console.log("savedUserdetail",savedUserdetail)
+                return done(null, savedUserdetail);
+            });
+                
             })
         }).catch(function(err) {done(err, false)});
     }));
