@@ -22,7 +22,19 @@
   </div>
   <div id="member" class="container ">
     <h2 class="mt mb">Your Policy Graph</h2>
-    
+    <div  class="form-group  ">
+      <label > Select Category</label>
+            
+      <select class="form-select", id="category", onchange="changeTest()" , name="category"  >
+        <option selected value="selectcategory" >All Categories</option>
+        <% if(category) {
+          console.log('category',category)
+          for(var i=0;i < category.length ; i++) {
+            console.log(category[i].name ) %>
+        <option value= '<%= category[i]._id %>'><%= category[i].name %></option>
+        <% }} %>
+      </select>
+    </div>
     <div class="row">
       <div class="coll-lg-2 col-md-2"></div>
       <div class="col-lg-8 col-md-8">
@@ -238,7 +250,148 @@ ctx.appendChild(allData)
     var getTest = '<%= data %>';  //var test is now assigned to getTest which will only work on browsers
     console.log(getTest);  // successfully prints 101 on browser
  </script>
+<script>
+  function changeTest(){
+  console.log("aya")
+  
+  console.log("value",document.getElementById("category").value)
+  var categ=document.getElementById("category").value;
+    $.post("/pendingpolicy/count/", {email: email,category:categ}, function(data, status){
+    document.getElementById('member').style.display='block';
+    console.log(data.data)
 
+    var data=[data.data.all, data.data.actioned,data.data.nonactioned, data.data.Approved, data.data.hold]
+    //console.log(document.getElementsByName('canvas')  )
+    var ctx = document.getElementById('memberUser');
+    if(ctx.childNodes.length >0)
+    {
+      while(ctx.firstChild){
+      ctx.removeChild(ctx.firstChild)
+    }
+    }
+    let allData = document.createElement('canvas'); 
+    allData.id="canvas"
+  var myChart = new Chart(allData, {
+    type: 'bar',
+    data: {
+        labels: ['All','Actioned','Non Actioned','Approved','Hold'],
+        datasets: [{
+            label: 'Policies Counts',
+            data: data,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100
+            }
+        }
+    }
+  });
+
+
+  //ctx.remove();
+  //old=document.getElementById("idcanvas")
+  if ($('#canvas').length > 0) {
+  $('#canvas').remove();
+  }
+  
+  //ctx.replaceChild(allData, ctx.firstElementChild);
+
+  ctx.appendChild(allData)
+  
+  return 0
+  
+
+  });
+
+
+  $.post("/pendingpolicy/countmembers/", {category:categ}, function(data, status){
+   document.getElementById('member').style.display='block';
+   console.log(data.data)
+
+   var data=[data.data.all, data.data.members,data.data.Approved, data.data.hold]
+   //console.log(document.getElementsByName('canvas')  )
+   var ctx = document.getElementById('memberUser3');
+   if(ctx.childNodes.length >0)
+   {
+     while(ctx.firstChild){
+     ctx.removeChild(ctx.firstChild)
+   }
+   }
+   let allData2 = document.createElement('canvas'); 
+   allData2.id='canvas2'
+var myChart = new Chart(allData2, {
+   type: 'bar',
+   data: {
+       labels: ['Total','Members','Approved','Hold'],
+       datasets: [{
+           label: 'Members Counts',
+           data: data,
+           backgroundColor: [
+               'rgba(255, 99, 132, 0.2)',
+               'rgba(54, 162, 235, 0.2)',
+               'rgba(255, 206, 86, 0.2)',
+               'rgba(75, 192, 192, 0.2)',
+               'rgba(153, 102, 255, 0.2)',
+               'rgba(255, 159, 64, 0.2)'
+           ],
+           borderColor: [
+               'rgba(255, 99, 132, 1)',
+               'rgba(54, 162, 235, 1)',
+               'rgba(255, 206, 86, 1)',
+               'rgba(75, 192, 192, 1)',
+               'rgba(153, 102, 255, 1)',
+               'rgba(255, 159, 64, 1)'
+           ],
+           borderWidth: 1
+       }]
+   },
+   options: {
+       scales: {
+           y: {
+               beginAtZero: true,
+               max: 100
+           }
+       }
+   }
+});
+
+if ($('#canvas2').length > 0) {
+  $('#canvas2').remove();
+  }
+  
+  //ctx.replaceChild(allData, ctx.firstElementChild);
+
+  ctx.appendChild(allData2)
+  
+  return 0
+  
+
+  });
+
+
+
+}
+</script>
 <script>
  
    (function() {
