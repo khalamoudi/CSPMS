@@ -1,6 +1,6 @@
 const UserDetail = require('../models/UserDetail')
 const user = require('../models/user')
-
+const nodemailer = require("nodemailer");
 const getUsers = async (req, res) => {
     let users = await UserDetail.find().lean()
     res.render('users.ejs', { data: { user: users } })
@@ -32,10 +32,14 @@ const getUsers = async (req, res) => {
                 }
                 else{
                     let users = await UserDetail.find().lean()
+                   
+                
     
                     res.render('users.ejs', {
-                      data: { success: 'Status Updated Successfully', user: users  },
+                      data: { success: 'User Updated Successfully', user: users  },
                     })
+                   
+                    
 
 
                 }
@@ -79,12 +83,49 @@ const getUsers = async (req, res) => {
                 })
                 }
                 else{
+                  console.log("User Deleted",docs)
+                   var useremail=docs.email
                     let users = await UserDetail.find().lean()
     
-                    res.render('users.ejs', {
-                      data: { success: 'User Deleted Successfully', user: users  },
-                    })
+                    var email = "cspmsgroup@gmail.com";
+                    var password = "Abdu@1405";
+                    var transporter = nodemailer.createTransport({
+                      service: "gmail",
+                      auth: {
+                        user: email,
+                        pass: password,
+                      },
+                    });
+                    var transporter = nodemailer.createTransport({
+                      service: "gmail",
+                      auth: {
+                        user: email,
+                        pass: password,
+                      },
+                    });
+                    var mailOptions = {
+                      from: email,
+                      to: useremail,
+                      subject: "CSPMS User Account Deleted",
+                      text: "Hi, Your account deleted from CSPMS . Thanks " ,
+                    };
+              
+                    transporter
+                      .sendMail(mailOptions)
+                      .then((result) => {
+                        res.render('users.ejs', {
+                          data: { success: 'User Deleted Successfully', user: users  },
+                        })
+                      })
+                      .catch((error) => {
+                        console.error(" email error",error);
+              
+                        res.json({ error: 'There is an error while Sedning User Deleted Email' })
+                      });
 
+
+
+    
 
                 }
 
@@ -101,4 +142,3 @@ const getUsers = async (req, res) => {
   module.exports = {
       getUsers,deleteUser,updateUser
   }
-  
