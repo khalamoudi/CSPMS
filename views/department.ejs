@@ -9,7 +9,7 @@
 
   <h1 style="text-align: center; margin:30px 0px;"><i>Departments</i></h1>
 
-  <div class="text-right mr">
+  <div class="text-right mr" id="btnadd">
  <!--This to call function for add department-->
    <button id="admin"   class="btn btn-success" data-toggle="modal" data-target="#exampleModal"><b>Add</b></button>
     
@@ -22,7 +22,7 @@
 <% }%>
 <%if(data.error)
 {
-    console.log('data',data) %>
+    console.log('data',data.users) %>
     <p  style="margin-top: 20px;"  id="msg" class="alert alert-danger"><%=data.error%></p>
 <% }%>
   <div id="view">
@@ -33,10 +33,21 @@
           <th scope="col">#</th>
           <th scope="col">Department Name</th>
           <th scope="col">Department Description</th>
+          <th scope="col" id="labupd" >Update</th>
+          <th scope="col" id="labdel" >Delete </th>
         </tr>
+        <script>
+          if (localStorage.role!='Admin'){
+            document.getElementById("btnadd").style.display="none";
+            document.getElementById("labupd").style.display="none";
+            document.getElementById("labdel").style.display="none";
+            
+          }
+          console.log("Departments",'<%=data.users[0].email%>')
+          </script>
       </thead>
       <tbody>
-            <!---This code is used to check if there is values in category then render it on browser-->
+            <!---This code is used to check if there is values in department then render it on browser-->
 
     <%  if(data.department.length) 
     {
@@ -47,6 +58,16 @@
         <th scope="row"><%= i+1  %></th>
         <td><%= data.department[i].name %></td>
         <td><%= data.department[i].description %></td>
+        <% var del = i;  var upd = 1000+i;  %>
+        <td><button id='<%=del%>' class="btn btn-success" onclick="updatefunc('<%=data.department[i].name%>','<%=data.department[i].description%>','<%=data.department[i].email%>','<%=data.department[i]._id%>')" data-toggle="modal" data-target="#exampleModal2"><b>Update</b></button></td>
+        <td><button id='<%=upd%>' class="btn btn-success" onclick="deletefunc('<%=data.department[i]._id%>')" data-toggle="modal" data-target="#exampleModal3"><b>Delete</b></button></td>
+        <script>
+          if (localStorage.role!='Admin'){
+           
+            document.getElementById('<%=del%>').style.display="none";
+            document.getElementById('<%=upd%>').style.display="none";
+          }
+        </script>
       </tr>
       <% } } %>
       </tbody>
@@ -77,10 +98,39 @@
         </div>
 
           <div  class="form-group ">
-            <label>Statement</label>
+            <label>Description</label>
             <textarea type="text" class="form-control" name="description"  
               placeholder="Enter Description"></textarea>
           </div>
+
+          <div class="form-group">
+            <label >Manager Email</label>
+            <!-- <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"> -->
+            <select  name="email" id="role" value="Select Email" class="form-select" >
+              <option selected value="">Select Email</option>
+              <%  if(data.users.length) 
+              {
+               console.log('department',data) 
+              for(var i=0;i < data.users.length ; i++) { %>
+                <option id='<%=data.users[i]._id%>' value='<%=data.users[i].email%>'><%=data.users[i].email%></option>
+                <script>
+                  
+                   if (localStorage.getItem('id')=='<%=data.users[i]._id%>')
+                   {
+                    document.getElementById('<%=data.users[i]._id%>').style.display="none";
+                  }
+                  /*
+                  if ('Manager'=='<%=data.users[i].role%>')
+                   {
+                    document.getElementById('<%=data.users[i]._id%>').style.display="none";
+                  }*/
+                  
+                </script>
+              </tr>
+              <% } } %>
+              </select>
+
+            </div>
 
           
 
@@ -94,6 +144,125 @@
   </div>
 </div>
 <!--  modal-->
+
+
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form action="/department/update/" method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update department</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+
+        <div  class="form-group  " style="display: none;">
+          <label>Id</label>
+          <input  id="iddepartment" type="text" class="form-control" name="id"  
+            placeholder="id">
+        </div>
+        <div>
+          <label>Name</label>
+          <input  id="namedepartment" type="text" class="form-control" name="name"  
+            placeholder="Enter department name">
+        </div>
+
+          <div  class="form-group ">
+            <label>Description</label>
+            <textarea id="descriptiondepartment"type="text" class="form-control" name="description"  
+              placeholder="Enter Description"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label >Manager Email</label>
+            <!-- <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"> -->
+            <select  name="email" id="role" value="Select Email" class="form-select" >
+              <option  value="">Select Email</option>
+              <%  if(data.users.length) 
+              {
+               console.log('department',data) 
+              for(var i=0;i < data.users.length ; i++) { %>
+                <option id='<%=data.users[i].email%>' value='<%=data.users[i].email%>'><%=data.users[i].email%></option>
+                <script>
+                  
+                   if (localStorage.getItem('email')=='<%=data.users[i].email%>')
+                   {
+                    document.getElementById('<%=data.users[i].email%>').style.display="none";
+                  }
+                  /*
+                  if ('Manager'=='<%=data.users[i].role%>')
+                   {
+                    document.getElementById('<%=data.users[i]._id%>').style.display="none";
+                  }*/
+                  
+                </script>
+              </tr>
+              <% } } %>
+              </select>
+
+            </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form action="/department/delete/" method="post">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete department</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div  class="form-group  " style="display: none;">
+          <label>Id</label>
+          <input  id="iddepartmentdelete" type="text" class="form-control" name="id"  
+            placeholder="id">
+        </div>
+        <h1>Are You Sure?</h1>
+
+          
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Delete</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
+
+<script>
+  function updatefunc(name,department,email,id)
+{
+  console.log("update function is here")
+  document.getElementById("iddepartment").value=id
+  document.getElementById("namedepartment").value=name //descriptiondepartment
+  document.getElementById("descriptiondepartment").value=department
+  document.getElementById(email).selected = 'selected'
+  console.log(name,department,email,id)
+}
+
+function deletefunc(id)
+{
+  document.getElementById("iddepartmentdelete").value=id
+  //window.location.href="/edit/"+id
+}
+</script>
 
 </body>
 <%- include ('./partials/footer.ejs') %>

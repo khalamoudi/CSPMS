@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const schema = new Schema(
   {
     name:{type: String},
-    description:{type:String}
+    description:{type:String},
+    email:{type:String},
   }
 );
 

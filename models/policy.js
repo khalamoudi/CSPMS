@@ -4,6 +4,8 @@ const Schema = mongoose.Schema
 const schema = new Schema({
   name: { type: String },
   description: { type: String },
+  startdate: { type: Date },
+  enddate: { type: Date },
   category:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'category'

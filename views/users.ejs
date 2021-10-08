@@ -1,18 +1,23 @@
 <%- include ('./partials/head.ejs') %>
     <!-- Embedded Javascreipt -->
-    <title>CUsers</title>
+    <title>Users</title>
  
 </head>
 <body>
+
   <%- include ('./partials/homeNavbar.ejs') %>
 
    <h1 style="text-align: center; margin:30px 0px"><i>Users</i></h1>
   <div class="tab">
   </div>
-
-
+  <%if(data.success)
+{
+    console.log('data',data) %>
+    <p  style="margin-top: 20px;"  id="msg" class="alert alert-success"><%=data.success%></p>
+<% }%>
+  <% var role = ""; %>
   <div id="view" class="tabcontent">
-    
+           
     <div class="container">
         <table class="table table-striped tbl-class">
           <thead>
@@ -20,13 +25,26 @@
               <th scope="col">#</th>
               <th scope="col">Name</th>
               <th scope="col">Email</th>
+              <th scope="col">Status</th>
+
+              <th scope="col" id="labupd" >Update Status</th>
+              <th scope="col" id="labdel" >Delete </th>
              
             </tr>
           </thead>
+          <script>
+            if (localStorage.role!='Admin'){
+              document.getElementById("labupd").style.display="none";
+              document.getElementById("labdel").style.display="none";
+            }
+
+            </script>
           <tbody>
+            
         <%  if(data.user.length) 
         {
           
+            
           let count =0;
         for(var i=0;i < data.user.length ; i++) {
           count++; %>
@@ -35,44 +53,117 @@
             <th scope="row"><%= i+1  %></th>
             <td><%= data.user[i].userName %></td>
             <td><%= data.user[i].email %></td>
-
+            <td><%= data.user[i].role %></td>
+            
+            <% var del = i;  var upd = 1000+i;  %>
+            <td><button id='<%=del%>'  class="btn btn-success" onclick="updatefunc('<%=data.user[i].role%>','<%=data.user[i]._id%>','<%=data.user[i].user_id%>')" data-toggle="modal" data-target="#exampleModal"><b>Update</b></button></td>
+            <td><button id='<%=upd%>'  class="btn btn-success" onclick="deletefunc('<%=data.user[i]._id%>','<%=data.user[i].user_id%>')" data-toggle="modal" data-target="#exampleModal2"><b>Delete</b></button></td>
+            <script>
+              if (localStorage.role!='Admin'){
+               
+                document.getElementById('<%=del%>').style.display="none";
+                document.getElementById('<%=upd%>').style.display="none";
+              }
+              if (localStorage.id=='<%=data.user[i].user_id%>'){
+               
+               document.getElementById('<%=del%>').style.display="none";
+               document.getElementById('<%=upd%>').style.display="none";
+             }
+              
+            </script>
           </tr>
+         
+
           <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <form action="/user/" method="put">
+              <form action="/user/update/" method="post">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Update user</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                
                 <div class="modal-body">
 
-                    <div  class="form-group hide">
-                      <label>Email</label>
-                      <input  value="<%=data.user[i].email %>" type="text" class="form-control" name="email" id="email" 
-                        placeholder="Enter Id">  
-                    </div>
-                    <div class="form-group">
-                      <label >Role</label>
-                      <!-- <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"> -->
-                      <select  name="role" id="role" value="<%=data.user[i].role %>" class="form-select" >
-                        <option selected>Select Role</option>
-                        <option value="Member">Member</option>
-                         <option value="Admin">Admin</option> 
-                      </select>
-                    </div>
+                  <div  class="form-group  " style="display: none;">
+                    <label>Id</label>
+                    <input  id="iduserupdate" type="text" class="form-control" name="id"  
+                      placeholder="id">
+                  </div>
+                  <div  class="form-group  " style="display: none;">
+                    <label>Id</label>
+                    <input  id="iduserdetailupdate" type="text" class="form-control" name="userid"  
+                      placeholder="id">
+                  </div>
+                  <div class="form-group">
+                    <label >Role</label>
+                    <!-- <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"> -->
+                    <select  name="role" id="role" value="Select Role" class="form-select" >
+                      <option selected>Select Role</option>
+                      <option value="Member">Member</option>
+                       <option value="Admin">Admin</option> 
+                    </select>
+                  </div>
+          
+                    
+          
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
+                  <button type="submit" class="btn btn-primary">Update</button>
                 </div>
               </div>
             </form>
             </div>
-          </div> 
+          </div>
 
+          <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <form action="/user/delete/" method="post">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Delete users</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                
+                <div class="modal-body">
+                  <div  class="form-group  " style="display: none;">
+                    <label>Id</label>
+                    <input  id="iduserdelete" type="text" class="form-control" name="id"  
+                      placeholder="id">
+                  </div>
+                  <div  class="form-group  " style="display: none;">
+                    <label>Id</label>
+                    <input  id="iduserdetaildelete" type="text" class="form-control" name="userid"  
+                      placeholder="id">
+                  </div>
+                  <h1>Are You Sure?</h1>
+          
+                    
+          
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Delete</button>
+                </div>
+              </div>
+            </form>
+            </div>
+          </div>
 
           
           <% } 
           console.log('count',count)
           if(count == data.user.length)
           { %>
+
+            
             <script>
+              console.log("ls",localStorage)
               let a = '<%=  data.user.length %>'
               console.log('users', a)
               var r = localStorage.getItem('role')
@@ -107,7 +198,32 @@
   
  
   <script>
-    
+
+function updatefunc(role,id,userid)
+{
+  console.log("update function is here")
+  document.getElementById("role").value=role
+  document.getElementById("iduserupdate").value=id
+  document.getElementById("iduserdetailupdate").value=userid
+  //console.log("localStorage.getItem('role')",localStorage.getItem('role'),localStorage)
+
+  console.log(name,user,id)
+}
+
+function deletefunc(id,userid)
+{
+  document.getElementById("iduserdelete").value=id
+  document.getElementById("iduserdetaildelete").value=userid
+  //window.location.href="/edit/"+id
+}
+
+
+
+    (function() {
+   // your page initialization code here
+   // the DOM will be available here
+      console.log("ready")
+    })();
   function tabChange(evt, action) {
       $('#msg').css('display','none')
     var i, tabcontent, tablinks;

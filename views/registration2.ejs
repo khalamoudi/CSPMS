@@ -1,0 +1,42 @@
+<%- include ('./partials/head.ejs') %>
+  <!-- Embedded Javascreipt -->
+  <title>SignUp</title>
+   <!--This script tag is used to maintain session using localstorage-->
+
+  <%- include ('./partials/navbar.ejs') %>
+  </head>
+
+  <body>
+    <%if(data.success)
+    {
+        console.log('data',data) %>
+        <p  style="margin-top: 20px;"  id="msg" class="alert alert-success"><%=data.success%></p>
+        
+    <% }%>
+
+    <div class="registration-section" ><h2 style="text-align: center;">Verification of Account</h2></div>
+    <div class="jumbotron registration-section">
+  
+
+      <form action="/verification" method="post">
+        <div class="form-group" style="display: none;" >
+          <label >'<%= data.Response.email %>'</label>
+          <input type="email" class="form-control" name="email" id="email" value='<%= data.Response.email %>'
+            placeholder="Enter email">
+        
+        </div>
+        <div class="form-group">
+          <label >Enter sms Verification</label>
+          <input  name="verification" type="text" class="form-control"  placeholder="Verification Pin">
+        </div>
+
+
+        <button type="submit"  class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+  </body>
+
+ 
+
+  </html>

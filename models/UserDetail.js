@@ -7,13 +7,15 @@ const schema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'user'
     },
+    verified:false,
     email: { type: String },
     userName: { type: String },
     role: { type: String },
+    phone:{ type: String },
     Department: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Department'
     },
   }
 );
-module.exports = mongoose.model('UserDetail', schema);
+module.exports = mongoose.model('UserDetail', schema,'userdetails');

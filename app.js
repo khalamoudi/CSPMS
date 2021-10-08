@@ -14,6 +14,8 @@ const passport = require('passport')
 const dotenv = require('dotenv');
 const mongoose = require('mongoose')
 var http = require('http').createServer(app)
+const cluster = require("cluster"); 
+const cpus = require("os").cpus().length;
 
 // configure enviroment variables
 dotenv.config();
@@ -23,6 +25,7 @@ dotenv.config();
 const categoryRoute = require('./routes/categoryRouter')
 const departmentRoute = require('./routes/departmentRouter')
 const policyRouter = require('./routes/policyRouter')
+const pendingpolicyRouter = require('./routes/pendingpolicyRouter')
 const authRouter = require('./routes/authRouter')
 const usersRouter = require('./routes/usersRouter')
 
@@ -30,7 +33,8 @@ const usersRouter = require('./routes/usersRouter')
 const departmentModel = require('./models/department')
 const categoryModel = require('./models/category')
 const policyModel = require('./models/policy')
-
+const UserDetail = require('./models/UserDetail')
+const verificationcode = require('./models/verificationcode')
 //////////////////////////////////////////////////////////////////
 
 const db = require('./Config/keys')
@@ -110,9 +114,59 @@ app.use('/home', require('./routes/homePage'))
 app.use('/department', departmentRoute)
 app.use('/category', categoryRoute)
 app.use('/policy', policyRouter)
+app.use('/pendingpolicy',pendingpolicyRouter)
 app.use('/auth', authRouter)
 app.use('/user', usersRouter)
 
+
+app.post('/verification', async (req, res) => {
+  try {
+      console.log("request body",req.body)
+      verificationcode.find({'email':req.body.email,'code':req.body.verification}).exec( async function (err, results) {
+        console.log("results.length",results.length)
+        if (results.length==1){
+          
+           await UserDetail.findOneAndUpdate({'email':req.body.email}, {'verified':true},
+            async function (err, doc) {
+            if (err){
+                      console.log("err",err)
+                      res.render('registration2.ejs', {
+                        data: { success: 'Account Not Verified',Response:{'email':req.body.email}},
+                      })
+            }
+            else{
+              
+              res.render('login.ejs', {
+                data: { success: 'Account Verified Successfully'},
+              })
+
+
+            }
+          })
+          /*
+          res.render('login.ejs', {
+            data: { success: 'Account Verified Successfully'},
+          })*/
+          res.render('registration2.ejs', {
+            data: { success: 'Account Not Verified',Response:{'email':req.body.email}},
+          })
+        }
+        else{
+          res.render('registration2.ejs', {
+            data: { success: 'Account Not Verified',Response:{'email':req.body.email}},
+          })
+        }
+      })
+    
+  } catch (error) {
+    
+      res.render('registration2.ejs', {
+        data: { success: 'Account Not Verified'},
+      })
+    
+    
+  }
+})
 
 app.get('/home', async (req, res) => {
   let category = await categoryModel.find().lean()
@@ -155,9 +209,33 @@ const socketConnection = io
 
 module.exports.sockets = socketConnection
 
-
+/*
 http.listen(port, function () {
   console.log(`listening on port ${port}...`)
-})
+})*/
+
+if (cluster.isMaster) {
+  // Checking whether the current cluser is master or not.Boolean value is returned
+  console.log("Master CPU - ", process.pid);
+
+  for (var i = 0; i < cpus; i++) {
+    cluster.fork(); // Forking a new process from the cluster
+  }
+
+  cluster.on("exit", (worker) => {
+    console.log("Worker Process has died - " + process.pid); // Process that exited/died.
+    console.log("Process Remaining - " + Object.keys(cluster.workers).length); // Prints the number of running workers at any instance
+    console.log("Starting New Working");
+    cluster.fork(); // Creating a new process again after the previous process exited so that max number of cpus are utilised.
+    console.log("Process Remaining - " + Object.keys(cluster.workers).length);
+  });
+} else {
+  http
+    .listen(port, function (){
+      
+        message = `Running Process: ${process.pid}`;
+        console.log(message);
+    });
+}
 
 
