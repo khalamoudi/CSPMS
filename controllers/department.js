@@ -3,6 +3,13 @@ const user = require('../models/user')
 const UserDetail = require('../models/UserDetail')
 //// this function is used to create department in database
 const nodemailer = require("nodemailer");
+
+const {google}=require('googleapis')
+const CLIENT_ID='1074942946188-ouiuutvf3vbr2s8c4drve261725hc4qt.apps.googleusercontent.com'
+const CLIENT_SECRET='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'
+const REDIRECT_URI='https://developers.google.com/oauthplayground'
+const REFRESH_TOKEN='1//04syQ-uzN6OxFCgYIARAAGAQSNwF-L9Ir3FW5XIlA7Cng753IacDLLjEKAc1w_Yyb4nDzn_zidVO-E58F1axJjZRVU06XcrAt0f8'
+
 const createDepartment = async (req, res) => {
   try {
     let data = req.body
@@ -19,24 +26,23 @@ const createDepartment = async (req, res) => {
       await UserDetail.findOneAndUpdate({'email':data.email},{'role':'Manager'}, {
         returnOriginal: false
       })
-      var email = "cspmsgroup@gmail.com";
-      var password = "Abdu@1405";
+      const oAuth2Client=new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI)
+      oAuth2Client.setCredentials({refresh_token:REFRESH_TOKEN})
+      const accessToken=await oAuth2Client.getAccessToken()
       var transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: email,
-          pass: password,
+          type:'OAuth2',
+          user: 'cspmsgroup@gmail.com',
+          clientId: CLIENT_ID,
+          clientSecret:CLIENT_SECRET,
+          refreshToken:REFRESH_TOKEN,
+          accessToken:accessToken
         },
       });
-      var transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: email,
-          pass: password,
-        },
-      });
+      
       var mailOptions = {
-        from: email,
+        from: 'cspmsgroup@gmail.com',
         to: data.email,
         subject: "CSPMS New Department Added",
         text: "Good News You are manager Now. Thanks " ,
@@ -107,24 +113,22 @@ const updatedepartment = async (req, res) => {
 
         let cat = await department.find().lean()
         let users = await user.find().lean()
-        var email = "cspmsgroup@gmail.com";
-        var password = "Abdu@1405";
+        const oAuth2Client=new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI)
+      oAuth2Client.setCredentials({refresh_token:REFRESH_TOKEN})
+      const accessToken=await oAuth2Client.getAccessToken()
         var transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: email,
-            pass: password,
-          },
-        });
-        var transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: email,
-            pass: password,
-          },
+                      service: "gmail",
+                      auth: {
+                        type:'OAuth2',
+                        user: 'cspmsgroup@gmail.com',
+                        clientId: CLIENT_ID,
+                        clientSecret:CLIENT_SECRET,
+                        refreshToken:REFRESH_TOKEN,
+                        accessToken:accessToken
+                      },
         });
         var mailOptions = {
-          from: email,
+          from: 'cspmsgroup@gmail.com',
           to: data.email,
           subject: "CSPMS Department Updated",
           text: "Good News You are manager Now. Thanks " ,

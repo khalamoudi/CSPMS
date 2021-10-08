@@ -1,6 +1,14 @@
 const UserDetail = require('../models/UserDetail')
 const user = require('../models/user')
 const nodemailer = require("nodemailer");
+
+const {google}=require('googleapis')
+const CLIENT_ID='1074942946188-ouiuutvf3vbr2s8c4drve261725hc4qt.apps.googleusercontent.com'
+const CLIENT_SECRET='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'
+const REDIRECT_URI='https://developers.google.com/oauthplayground'
+const REFRESH_TOKEN='1//04syQ-uzN6OxFCgYIARAAGAQSNwF-L9Ir3FW5XIlA7Cng753IacDLLjEKAc1w_Yyb4nDzn_zidVO-E58F1axJjZRVU06XcrAt0f8'
+
+
 const getUsers = async (req, res) => {
     let users = await UserDetail.find().lean()
     res.render('users.ejs', { data: { user: users } })
@@ -87,24 +95,23 @@ const getUsers = async (req, res) => {
                    var useremail=docs.email
                     let users = await UserDetail.find().lean()
     
-                    var email = "cspmsgroup@gmail.com";
-                    var password = "Abdu@1405";
+                    const oAuth2Client=new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI)
+                    oAuth2Client.setCredentials({refresh_token:REFRESH_TOKEN})
+                    const accessToken=await oAuth2Client.getAccessToken()
+                                  
                     var transporter = nodemailer.createTransport({
                       service: "gmail",
                       auth: {
-                        user: email,
-                        pass: password,
-                      },
-                    });
-                    var transporter = nodemailer.createTransport({
-                      service: "gmail",
-                      auth: {
-                        user: email,
-                        pass: password,
+                        type:'OAuth2',
+                        user: 'cspmsgroup@gmail.com',
+                        clientId: CLIENT_ID,
+                        clientSecret:CLIENT_SECRET,
+                        refreshToken:REFRESH_TOKEN,
+                        accessToken:accessToken
                       },
                     });
                     var mailOptions = {
-                      from: email,
+                      from: 'cspmsgroup@gmail.com',
                       to: useremail,
                       subject: "CSPMS User Account Deleted",
                       text: "Hi, Your account deleted from CSPMS . Thanks " ,
@@ -142,3 +149,4 @@ const getUsers = async (req, res) => {
   module.exports = {
       getUsers,deleteUser,updateUser
   }
+  
