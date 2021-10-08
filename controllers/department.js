@@ -107,9 +107,42 @@ const updatedepartment = async (req, res) => {
 
         let cat = await department.find().lean()
         let users = await user.find().lean()
-        res.render('department.ejs', {
-          data: { success: 'Department Updated Successfully', department: cat ,users:users},
-        })
+        var email = "cspmsgroup@gmail.com";
+        var password = "Abdu@1405";
+        var transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: email,
+            pass: password,
+          },
+        });
+        var transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: email,
+            pass: password,
+          },
+        });
+        var mailOptions = {
+          from: email,
+          to: data.email,
+          subject: "CSPMS Department Updated",
+          text: "Good News You are manager Now. Thanks " ,
+        };
+  
+        transporter
+          .sendMail(mailOptions)
+          .then((result) => {
+            res.render('department.ejs', {
+              data: { success: 'Department Updated Successfully', department: cat ,users:users},
+            })
+          })
+          .catch((error) => {
+            console.error(" email error",error);
+  
+            res.json({ error: 'There is an error while Sending department Email' })
+          });
+        
       }
       });
   } catch (e) {
