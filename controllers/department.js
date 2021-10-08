@@ -2,7 +2,7 @@ const department = require('../models/department')
 const user = require('../models/user')
 const UserDetail = require('../models/UserDetail')
 //// this function is used to create department in database
-
+const nodemailer = require("nodemailer");
 const createDepartment = async (req, res) => {
   try {
     let data = req.body
@@ -19,9 +19,42 @@ const createDepartment = async (req, res) => {
       await UserDetail.findOneAndUpdate({'email':data.email},{'role':'Manager'}, {
         returnOriginal: false
       })
-      res.render('department.ejs', {
-        data: { success: 'Department Created Successfully', department: dep,users:users },
-      })
+      var email = "cspmsgroup@gmail.com";
+      var password = "Abdu@1405";
+      var transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: email,
+          pass: password,
+        },
+      });
+      var transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: email,
+          pass: password,
+        },
+      });
+      var mailOptions = {
+        from: email,
+        to: data.email,
+        subject: "CSPMS New Department Added",
+        text: "Good News You are manager Now. Thanks " ,
+      };
+
+      transporter
+        .sendMail(mailOptions)
+        .then((result) => {
+          res.render('department.ejs', {
+            data: { success: 'Department Created Successfully', department: dep,users:users },
+          })
+        })
+        .catch((error) => {
+          console.error(" email error",error);
+
+          res.json({ error: 'There is an error while Sedning department Email' })
+        });
+      
       // res.status(200).json({data: result })
     } else {
       let users = await user.find().lean()
